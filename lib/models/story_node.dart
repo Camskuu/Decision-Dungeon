@@ -6,6 +6,7 @@ class StoryNode {
   final String description;
   final List<StoryChoice> choices;
   final bool isEnding;
+  final List<String> sceneFrames;
 
   const StoryNode({
     required this.id,
@@ -13,5 +14,6 @@ class StoryNode {
     required this.description,
     required this.choices,
     this.isEnding = false,
+    this.sceneFrames = const [],
   });
 }

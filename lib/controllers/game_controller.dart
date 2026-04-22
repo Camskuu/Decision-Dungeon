@@ -8,24 +8,43 @@ class GameController extends ChangeNotifier {
 
   String _currentNodeId = 'start';
   int _health = maxHealth;
-  String? _lastResult;
+
+  String? _eventText;
+  String? _pendingNodeId;
+  StoryChoice? _pendingChoice;
+  bool _showingEventScreen = false;
+
   final List<String> _decisionLog = [];
 
   StoryNode get currentNode => storyData[_currentNodeId]!;
   int get health => _health;
-  String? get lastResult => _lastResult;
+
+  String? get eventText => _eventText;
+  StoryChoice? get pendingChoice => _pendingChoice;
+  bool get showingEventScreen => _showingEventScreen;
+
   List<String> get decisionLog => List.unmodifiable(_decisionLog);
 
   void makeChoice(StoryChoice choice) {
-    _health = (_health + choice.healthChange).clamp(0, maxHealth).toInt();
-    _lastResult = choice.resultText;
+    _pendingChoice = choice;
     _decisionLog.add(choice.text);
 
-    if (_health <= 0) {
-      _currentNodeId = 'gameOver';
-    } else {
-      _currentNodeId = choice.nextNodeId;
-    }
+    _health = (_health + choice.healthChange).clamp(0, maxHealth).toInt();
+    _eventText = choice.resultText;
+    _pendingNodeId = _health <= 0 ? 'gameOver' : choice.nextNodeId;
+    _showingEventScreen = true;
+
+    notifyListeners();
+  }
+
+  void advanceFromEvent() {
+    if (_pendingNodeId == null) return;
+
+    _currentNodeId = _pendingNodeId!;
+    _pendingNodeId = null;
+    _pendingChoice = null;
+    _eventText = null;
+    _showingEventScreen = false;
 
     notifyListeners();
   }
@@ -33,8 +52,12 @@ class GameController extends ChangeNotifier {
   void restartGame() {
     _currentNodeId = 'start';
     _health = maxHealth;
-    _lastResult = null;
+    _eventText = null;
+    _pendingNodeId = null;
+    _pendingChoice = null;
+    _showingEventScreen = false;
     _decisionLog.clear();
+
     notifyListeners();
   }
 }

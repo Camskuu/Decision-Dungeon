@@ -19,6 +19,14 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/scene/start/
+    - assets/images/scene/ghoul/
+    - assets/images/scene/chest/
+    - assets/images/scene/altar/
+    - assets/images/scene/victory/
+    - assets/images/scene/cursed/
+    - assets/images/scene/escape/
+    - assets/images/scene/game_over/
     - assets/fonts/
 
   fonts:

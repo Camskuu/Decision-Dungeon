@@ -7,6 +7,12 @@ final Map<String, StoryNode> storyData = {
     title: 'Room 1',
     description:
         'You step into the dungeon entrance. Cold air rushes past you as torchlight flickers across the stone walls. Three paths lie ahead.',
+    sceneFrames: [
+      'assets/images/scene/start/torch_1.png',
+      'assets/images/scene/start/torch_2.png',
+      'assets/images/scene/start/torch_3.png',
+      'assets/images/scene/start/torch_4.png',
+    ],
     choices: [
       StoryChoice(
         text: 'Take the left passage',
@@ -25,12 +31,17 @@ final Map<String, StoryNode> storyData = {
       ),
     ],
   ),
-
   'ghoul': const StoryNode(
     id: 'ghoul',
     title: 'Room 2: The Ghoul',
     description:
         'A gaunt ghoul crawls from the shadows, hissing as it blocks your way. Its claws scrape against the stone floor.',
+    sceneFrames: [
+      'assets/images/scene/ghoul/skeleton_1.png',
+      'assets/images/scene/ghoul/skeleton_2.png',
+      'assets/images/scene/ghoul/skeleton_3.png',
+      'assets/images/scene/ghoul/skeleton_4.png',
+    ],
     choices: [
       StoryChoice(
         text: 'Fight the ghoul',
@@ -51,12 +62,17 @@ final Map<String, StoryNode> storyData = {
       ),
     ],
   ),
-
   'chest': const StoryNode(
     id: 'chest',
     title: 'Room 3: The Treasure Chest',
     description:
         'You enter a dimly lit chamber. A large treasure chest sits in the center of the room. Somewhere nearby, you hear a faint clicking sound.',
+    sceneFrames: [
+      'assets/images/scene/chest/chest_1.png',
+      'assets/images/scene/chest/chest_2.png',
+      'assets/images/scene/chest/chest_3.png',
+      'assets/images/scene/chest/chest_4.png',
+    ],
     choices: [
       StoryChoice(
         text: 'Open the chest immediately',
@@ -67,8 +83,7 @@ final Map<String, StoryNode> storyData = {
       StoryChoice(
         text: 'Inspect the chest for traps',
         nextNodeId: 'escapeEnding',
-        resultText:
-            'You discover and disable the trap, then claim the treasure safely.',
+        resultText: 'You discover and disable the trap, then claim the treasure safely.',
       ),
       StoryChoice(
         text: 'Leave the chest alone',
@@ -77,12 +92,17 @@ final Map<String, StoryNode> storyData = {
       ),
     ],
   ),
-
   'altar': const StoryNode(
     id: 'altar',
     title: 'Room 4: The Ancient Altar',
     description:
         'An ancient altar glows with a strange blue light. Resting on it is a small iron key surrounded by runes.',
+    sceneFrames: [
+      'assets/images/scene/altar/key_1.png',
+      'assets/images/scene/altar/key_2.png',
+      'assets/images/scene/altar/key_3.png',
+      'assets/images/scene/altar/key_4.png',
+    ],
     choices: [
       StoryChoice(
         text: 'Take the key',
@@ -102,39 +122,59 @@ final Map<String, StoryNode> storyData = {
       ),
     ],
   ),
-
   'escapeEnding': const StoryNode(
     id: 'escapeEnding',
     title: 'Victory',
     description:
         'You survive the dungeon and escape with both your life and a valuable reward. Your choices led you to the best possible outcome.',
+    sceneFrames: [
+      'assets/images/scene/victory/coin_1.png',
+      'assets/images/scene/victory/coin_2.png',
+      'assets/images/scene/victory/coin_3.png',
+      'assets/images/scene/victory/coin_4.png',
+    ],
     choices: [],
     isEnding: true,
   ),
-
   'cursedEnding': const StoryNode(
     id: 'cursedEnding',
     title: 'Cursed Ending',
     description:
         'You make it out of the dungeon, but something dark follows you. Whatever power rested below now clings to your soul.',
+    sceneFrames: [
+      'assets/images/scene/cursed/skull_1.png',
+      'assets/images/scene/cursed/skull_2.png',
+      'assets/images/scene/cursed/skull_3.png',
+      'assets/images/scene/cursed/skull_4.png',
+    ],
     choices: [],
     isEnding: true,
   ),
-
   'neutralEnding': const StoryNode(
     id: 'neutralEnding',
     title: 'Escape',
     description:
         'You leave the dungeon empty-handed, but alive. Not every adventure ends in glory, but survival is its own reward.',
+    sceneFrames: [
+      'assets/images/scene/escape/flag_1.png',
+      'assets/images/scene/escape/flag_2.png',
+      'assets/images/scene/escape/flag_3.png',
+      'assets/images/scene/escape/flag_4.png',
+    ],
     choices: [],
     isEnding: true,
   ),
-
   'gameOver': const StoryNode(
     id: 'gameOver',
     title: 'Game Over',
     description:
         'Your strength fails, and the dungeon claims another victim. The darkness closes in around you.',
+    sceneFrames: [
+      'assets/images/scene/game_over/skull_1.png',
+      'assets/images/scene/game_over/skull_2.png',
+      'assets/images/scene/game_over/skull_3.png',
+      'assets/images/scene/game_over/skull_4.png',
+    ],
     choices: [],
     isEnding: true,
   ),
