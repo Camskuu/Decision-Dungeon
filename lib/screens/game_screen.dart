@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import '../controllers/app_settings.dart';
 import '../controllers/game_controller.dart';
 import '../models/story_choice.dart';
+import '../services/audio_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/blinking_prompt.dart';
+import '../widgets/pixel_frame.dart';
 import '../widgets/scene_art.dart';
 import '../widgets/settings_sheet.dart';
 import '../widgets/typewriter_text.dart';
@@ -34,6 +37,16 @@ class _GameScreenState extends State<GameScreen> {
     super.dispose();
   }
 
+  void _playClick() {
+    if (!widget.settings.soundOn) return;
+    AudioService.instance.playClick();
+  }
+
+  void _playContinue() {
+    if (!widget.settings.soundOn) return;
+    AudioService.instance.playContinue();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -43,10 +56,20 @@ class _GameScreenState extends State<GameScreen> {
 
         return Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                _playClick();
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back),
+            ),
             title: const Text('Decision Dungeon'),
             actions: [
               IconButton(
-                onPressed: () => showSettingsSheet(context, widget.settings),
+                onPressed: () {
+                  _playClick();
+                  showSettingsSheet(context, widget.settings);
+                },
                 icon: const Icon(Icons.settings),
               ),
             ],
@@ -55,26 +78,37 @@ class _GameScreenState extends State<GameScreen> {
             decoration: BoxDecoration(
               gradient: isDark
                   ? const LinearGradient(
-                      colors: [
-                        Color(0xFF181818),
-                        Color(0xFF101010),
-                      ],
+                      colors: [Color(0xFF181818), Color(0xFF101010)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     )
                   : const LinearGradient(
-                      colors: [
-                        Color(0xFFF1E2BE),
-                        Color(0xFFE2D0A7),
-                      ],
+                      colors: [Color(0xFFF1E2BE), Color(0xFFE2D0A7)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
             ),
             child: SafeArea(
-              child: _controller.showingEventScreen
-                  ? _buildEventScreen(context, isDark)
-                  : _buildGameplayScreen(context, isDark),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 320),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+                child: _controller.showingEventScreen
+                    ? KeyedSubtree(
+                        key: const ValueKey('event_screen'),
+                        child: _buildEventScreen(context, isDark),
+                      )
+                    : KeyedSubtree(
+                        key: ValueKey('room_${_controller.currentNode.id}'),
+                        child: _buildGameplayScreen(context, isDark),
+                      ),
+              ),
             ),
           ),
         );
@@ -92,52 +126,49 @@ class _GameScreenState extends State<GameScreen> {
 
         final storySection = Expanded(
           flex: 3,
-          child: Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface.withOpacity(0.95),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppTheme.gold, width: 2),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  node.title,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 12),
-                _buildHealthRow(),
-                const SizedBox(height: 16),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 4,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: PixelFrame(
+              borderColor: AppTheme.gold,
+              fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.95),
+              shadowColor: Colors.black.withOpacity(0.25),
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    node.title,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                  decoration: BoxDecoration(
+                  const SizedBox(height: 12),
+                  _buildHealthRow(),
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 4,
+                    ),
                     color: isDark
-                        ? Colors.black.withOpacity(0.25)
+                        ? Colors.black.withOpacity(0.22)
                         : Colors.brown.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: SceneArt(
-                    frames: node.sceneFrames,
-                    height: isWide ? 120 : 95,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: TypewriterText(
-                      key: ValueKey('desc_${node.id}'),
-                      text: node.description,
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    child: SceneArt(
+                      frames: node.sceneFrames,
+                      height: isWide ? 120 : 95,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: TypewriterText(
+                        key: ValueKey('desc_${node.id}'),
+                        text: node.description,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -157,13 +188,19 @@ class _GameScreenState extends State<GameScreen> {
                   ] else ...[
                     _endButton(
                       text: 'Play Again',
-                      onPressed: _controller.restartGame,
+                      onPressed: () {
+                        _playClick();
+                        _controller.restartGame();
+                      },
                       filled: true,
                     ),
                     const SizedBox(height: 14),
                     _endButton(
                       text: 'Back to Title',
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        _playClick();
+                        Navigator.pop(context);
+                      },
                     ),
                   ],
                   const SizedBox(height: 18),
@@ -175,12 +212,8 @@ class _GameScreenState extends State<GameScreen> {
         );
 
         return isWide
-            ? Row(
-                children: [storySection, actionSection],
-              )
-            : Column(
-                children: [storySection, actionSection],
-              );
+            ? Row(children: [storySection, actionSection])
+            : Column(children: [storySection, actionSection]);
       },
     );
   }
@@ -211,20 +244,11 @@ class _GameScreenState extends State<GameScreen> {
         padding: const EdgeInsets.all(24),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 680),
-          child: Container(
+          child: PixelFrame(
+            borderColor: AppTheme.gold,
+            fillColor: panelColor,
+            shadowColor: Colors.black.withOpacity(0.28),
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: panelColor,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppTheme.gold, width: 3),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.25),
-                  blurRadius: 14,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
             child: Column(
               children: [
                 Text(
@@ -235,7 +259,6 @@ class _GameScreenState extends State<GameScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 14),
-
                 Text(
                   'You chose: ${choice?.text ?? ''}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -243,115 +266,79 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-
                 const SizedBox(height: 18),
-
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.black.withOpacity(0.22)
-                        : Colors.brown.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
+                  padding: const EdgeInsets.all(8),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.20)
+                      : Colors.brown.withOpacity(0.08),
                   child: SceneArt(
                     frames: currentNode.sceneFrames,
                     height: 130,
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
-                // Retro RPG message box
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: AppTheme.gold,
-                    borderRadius: BorderRadius.circular(18),
+                PixelFrame(
+                  borderColor: AppTheme.gold,
+                  fillColor: messageBoxColor,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 18,
                   ),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: panelColor,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 18,
-                      ),
-                      decoration: BoxDecoration(
-                        color: messageBoxColor,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppTheme.gold,
-                          width: 2,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.play_arrow_rounded,
-                                color: AppTheme.red,
-                                size: 22,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                'Event',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(
-                                      color: AppTheme.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                            ],
+                          const Icon(
+                            Icons.play_arrow_rounded,
+                            color: AppTheme.red,
+                            size: 22,
                           ),
-                          const SizedBox(height: 12),
-                          TypewriterText(
-                            key: ValueKey('event_$eventText'),
-                            text: eventText,
+                          const SizedBox(width: 6),
+                          Text(
+                            'Event',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
                                 ?.copyWith(
-                                  color: messageTextColor,
-                                  height: 1.45,
+                                  color: AppTheme.red,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                            speed: const Duration(milliseconds: 16),
                           ),
-                          if ((choice?.healthChange ?? 0) != 0) ...[
-                            const SizedBox(height: 14),
-                            Text(
-                              choice!.healthChange < 0
-                                  ? 'Health ${choice.healthChange}'
-                                  : 'Health +${choice.healthChange}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      TypewriterText(
+                        key: ValueKey('event_$eventText'),
+                        text: eventText,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: messageTextColor,
+                              height: 1.45,
+                            ),
+                        speed: const Duration(milliseconds: 16),
+                      ),
+                      if ((choice?.healthChange ?? 0) != 0) ...[
+                        const SizedBox(height: 14),
+                        Text(
+                          choice!.healthChange < 0
+                              ? 'Health ${choice.healthChange}'
+                              : 'Health +${choice.healthChange}',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: choice.healthChange < 0
                                         ? AppTheme.red
                                         : AppTheme.green,
                                   ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-
-                const SizedBox(height: 22),
-
+                const SizedBox(height: 18),
+                const BlinkingPrompt(text: 'Press Continue'),
+                const SizedBox(height: 14),
                 SizedBox(
                   width: double.infinity,
                   height: 58,
@@ -359,11 +346,12 @@ class _GameScreenState extends State<GameScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.green,
                       foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      shape: const RoundedRectangleBorder(),
                     ),
-                    onPressed: _controller.advanceFromEvent,
+                    onPressed: () {
+                      _playContinue();
+                      _controller.advanceFromEvent();
+                    },
                     child: Text(
                       'Continue',
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -402,9 +390,7 @@ class _GameScreenState extends State<GameScreen> {
         ? Colors.black.withOpacity(0.75)
         : const Color(0xFFF3E7C7);
 
-    final buttonTextColor = isDark
-        ? AppTheme.textLight
-        : AppTheme.lightText;
+    final buttonTextColor = isDark ? AppTheme.textLight : AppTheme.lightText;
 
     return SizedBox(
       width: double.infinity,
@@ -413,11 +399,12 @@ class _GameScreenState extends State<GameScreen> {
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppTheme.gold, width: 2),
           backgroundColor: buttonBackground,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-          ),
+          shape: const RoundedRectangleBorder(),
         ),
-        onPressed: () => _controller.makeChoice(choice),
+        onPressed: () {
+          _playClick();
+          _controller.makeChoice(choice);
+        },
         child: Text(
           choice.text,
           textAlign: TextAlign.center,
@@ -442,9 +429,7 @@ class _GameScreenState extends State<GameScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.green,
             foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
+            shape: const RoundedRectangleBorder(),
           ),
           onPressed: onPressed,
           child: Text(
@@ -463,9 +448,7 @@ class _GameScreenState extends State<GameScreen> {
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppTheme.gold, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: const RoundedRectangleBorder(),
         ),
         onPressed: onPressed,
         child: Text(
@@ -477,16 +460,10 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildDecisionLog(bool isDark) {
-    return Container(
-      width: double.infinity,
+    return PixelFrame(
+      borderColor: isDark ? Colors.grey.shade600 : Colors.brown.shade300,
+      fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.95),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: isDark ? Colors.grey.shade600 : Colors.brown.shade300,
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

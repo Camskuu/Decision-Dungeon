@@ -219,7 +219,7 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     Text(
-                      'Version 1.0.0',
+                      'Version 1.3.0',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.grey,
                       ),
