@@ -21,6 +21,7 @@ flutter:
 
   assets:
     - assets/audio/
+    - assets/fonts/
     - assets/images/scene/start/
     - assets/images/scene/ghoul/
     - assets/images/scene/chest/
@@ -29,7 +30,10 @@ flutter:
     - assets/images/scene/cursed/
     - assets/images/scene/escape/
     - assets/images/scene/game_over/
-    - assets/fonts/
+    - assets/images/scene/library/
+    - assets/images/scene/altar_flame/
+    - assets/images/scene/relic_vault/
+    
 
   fonts:
     - family: Jacquard12

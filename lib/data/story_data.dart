@@ -4,9 +4,9 @@ import '../models/story_node.dart';
 final Map<String, StoryNode> storyData = {
   'start': const StoryNode(
     id: 'start',
-    title: 'Room 1',
+    title: 'Room 1: The Dungeon Gate',
     description:
-        'You step into the dungeon entrance. Cold air rushes past you as torchlight flickers across the stone walls. Three paths lie ahead.',
+        'You step beneath a cracked stone arch and into the dungeon proper. Cold air rushes past you, carrying the smell of dust, ash, and old metal. Three paths open ahead: a whispering hall lined with statues, a torchlit tunnel streaked with claw marks, and a broken bridge suspended over darkness.',
     sceneFrames: [
       'assets/images/scene/start/torch_1.png',
       'assets/images/scene/start/torch_2.png',
@@ -15,27 +15,66 @@ final Map<String, StoryNode> storyData = {
     ],
     choices: [
       StoryChoice(
-        text: 'Take the left passage',
-        nextNodeId: 'ghoul',
-        resultText: 'You move cautiously into the darkness.',
+        text: 'Enter the whispering hall',
+        nextNodeId: 'whisperHall',
+        resultText:
+            'You follow the sound of distant voices into the statue-lined corridor.',
       ),
       StoryChoice(
-        text: 'Walk straight toward the torchlight',
-        nextNodeId: 'chest',
-        resultText: 'You follow the warm glow deeper into the dungeon.',
+        text: 'Take the torchlit tunnel',
+        nextNodeId: 'ghoulPassage',
+        resultText:
+            'You move toward the orange glow, where the walls are marked by deep scratches.',
       ),
       StoryChoice(
-        text: 'Inspect the carvings on the wall',
-        nextNodeId: 'altar',
-        resultText: 'The symbols reveal a hidden chamber nearby.',
+        text: 'Cross toward the broken bridge',
+        nextNodeId: 'collapsedBridge',
+        resultText:
+            'You head toward the edge of the chasm, where loose stones crumble underfoot.',
       ),
     ],
   ),
-  'ghoul': const StoryNode(
-    id: 'ghoul',
-    title: 'Room 2: The Ghoul',
+
+  'whisperHall': const StoryNode(
+    id: 'whisperHall',
+    title: 'Room 2: The Whispering Hall',
     description:
-        'A gaunt ghoul crawls from the shadows, hissing as it blocks your way. Its claws scrape against the stone floor.',
+        'Tall statues stand on both sides of the chamber, their faces worn smooth by time. A faint whisper curls through the air, as if the stone itself is speaking. Several of the statues still hold gemstones in their empty eye sockets.',
+    sceneFrames: [
+      'assets/images/scene/start/torch_1.png',
+      'assets/images/scene/start/torch_2.png',
+      'assets/images/scene/start/torch_3.png',
+      'assets/images/scene/start/torch_4.png',
+    ],
+    choices: [
+      StoryChoice(
+        text: 'Inspect the statues carefully',
+        nextNodeId: 'forgottenLibrary',
+        resultText:
+            'One statue turns on a hidden pivot, revealing a concealed passage to an old library.',
+      ),
+      StoryChoice(
+        text: 'Rush through before the whispers grow louder',
+        nextNodeId: 'trapGallery',
+        healthChange: -1,
+        resultText:
+            'You push forward, but a hidden dart trap fires from the wall and grazes your shoulder.',
+      ),
+      StoryChoice(
+        text: 'Pry a gemstone from one of the statues',
+        nextNodeId: 'chestChamber',
+        healthChange: -1,
+        resultText:
+            'The gem comes free, but the floor trembles and a secret panel slides open beneath you.',
+      ),
+    ],
+  ),
+
+  'ghoulPassage': const StoryNode(
+    id: 'ghoulPassage',
+    title: 'Room 3: The Ghoul Passage',
+    description:
+        'A gaunt creature drags itself from the shadows ahead. Its rib cage is visible beneath pale skin, and its claws scrape sparks from the stone floor. Behind it, the passage splits again into darkness.',
     sceneFrames: [
       'assets/images/scene/ghoul/skeleton_1.png',
       'assets/images/scene/ghoul/skeleton_2.png',
@@ -45,28 +84,98 @@ final Map<String, StoryNode> storyData = {
     choices: [
       StoryChoice(
         text: 'Fight the ghoul',
-        nextNodeId: 'chest',
+        nextNodeId: 'chestChamber',
         healthChange: -1,
-        resultText: 'You defeat the ghoul, but its claws leave a deep wound.',
+        resultText:
+            'You defeat the creature, but not before its claws rake across your arm.',
       ),
       StoryChoice(
-        text: 'Sneak around it',
-        nextNodeId: 'altar',
-        resultText: 'You press yourself against the wall and slip past unseen.',
+        text: 'Use your torch to drive it back',
+        nextNodeId: 'altarOfAsh',
+        resultText:
+            'The ghoul recoils from the flame, giving you just enough room to slip past.',
       ),
       StoryChoice(
-        text: 'Run back',
-        nextNodeId: 'start',
-        healthChange: -1,
-        resultText: 'You escape, but stumble and injure yourself.',
+        text: 'Squeeze through a crack in the wall',
+        nextNodeId: 'forgottenLibrary',
+        resultText:
+            'You find a narrow hidden route that leads away from the creature and into a quieter chamber.',
       ),
     ],
   ),
-  'chest': const StoryNode(
-    id: 'chest',
-    title: 'Room 3: The Treasure Chest',
+
+  'collapsedBridge': const StoryNode(
+    id: 'collapsedBridge',
+    title: 'Room 4: The Collapsed Bridge',
     description:
-        'You enter a dimly lit chamber. A large treasure chest sits in the center of the room. Somewhere nearby, you hear a faint clicking sound.',
+        'A stone bridge stretches over a deep black chasm, but its center has crumbled away. On the far side, you can see the outline of an iron door. Beneath you, there is only darkness and the sound of distant dripping water.',
+    sceneFrames: [
+      'assets/images/scene/escape/flag_1.png',
+      'assets/images/scene/escape/flag_2.png',
+      'assets/images/scene/escape/flag_3.png',
+      'assets/images/scene/escape/flag_4.png',
+    ],
+    choices: [
+      StoryChoice(
+        text: 'Cross the remaining stones carefully',
+        nextNodeId: 'relicVault',
+        resultText:
+            'You test each step and manage to cross the ruin of the bridge without falling.',
+      ),
+      StoryChoice(
+        text: 'Leap the broken section',
+        nextNodeId: 'trapGallery',
+        healthChange: -1,
+        resultText:
+            'You barely make the jump, slamming hard into the far ledge before dragging yourself up.',
+      ),
+      StoryChoice(
+        text: 'Search the walls for another route',
+        nextNodeId: 'forgottenLibrary',
+        resultText:
+            'You discover faded markings on the wall that point toward a hidden side passage.',
+      ),
+    ],
+  ),
+
+  'forgottenLibrary': const StoryNode(
+      id: 'forgottenLibrary',
+      title: 'Room 5: The Forgotten Library',
+      description:
+          'Dusty shelves line the circular room from floor to ceiling. Most of the books have rotted away, but a few survive in locked cases. At the center stands a reading desk with a journal still open beneath a cracked lantern.',
+      sceneFrames: [
+        'assets/images/scene/library/book_1.png',
+        'assets/images/scene/library/book_2.png',
+        'assets/images/scene/library/book_3.png',
+      ],
+      choices: [
+        StoryChoice(
+          text: 'Read the journal on the desk',
+          nextNodeId: 'altarOfAsh',
+          resultText:
+              'The journal speaks of a sacred altar and warns that the true danger is not the dungeon, but the relic at its heart.',
+        ),
+        StoryChoice(
+          text: 'Search the cases for valuables',
+          nextNodeId: 'chestChamber',
+          resultText:
+              'Behind the shelves you find a hidden crawlspace that leads to a treasure chamber.',
+        ),
+        StoryChoice(
+          text: 'Force open the sealed door at the back',
+          nextNodeId: 'relicVault',
+          healthChange: -1,
+          resultText:
+              'The rusted seal gives way, but a jagged shard of metal cuts your hand as the door swings open.',
+        ),
+      ],
+    ),
+
+  'chestChamber': const StoryNode(
+    id: 'chestChamber',
+    title: 'Room 6: The Chest Chamber',
+    description:
+        'A large iron-bound chest rests in the middle of the room beneath a cone of pale light. Coins are scattered across the floor, but none look recently disturbed. The silence here is so complete it feels deliberate.',
     sceneFrames: [
       'assets/images/scene/chest/chest_1.png',
       'assets/images/scene/chest/chest_2.png',
@@ -75,58 +184,132 @@ final Map<String, StoryNode> storyData = {
     ],
     choices: [
       StoryChoice(
+        text: 'Inspect the chest for traps',
+        nextNodeId: 'relicVault',
+        resultText:
+            'You notice a pressure mechanism beneath the latch and disable it before the trap can spring.',
+      ),
+      StoryChoice(
         text: 'Open the chest immediately',
         nextNodeId: 'cursedEnding',
         healthChange: -1,
-        resultText: 'A hidden dart trap fires as the lid opens.',
+        resultText:
+            'The chest opens with a hiss. A wave of dark energy spills out and clings to you like smoke.',
       ),
       StoryChoice(
-        text: 'Inspect the chest for traps',
-        nextNodeId: 'escapeEnding',
-        resultText: 'You discover and disable the trap, then claim the treasure safely.',
-      ),
-      StoryChoice(
-        text: 'Leave the chest alone',
+        text: 'Ignore the chest and follow a draft in the wall',
         nextNodeId: 'neutralEnding',
-        resultText: 'You decide that survival is worth more than gold.',
+        resultText:
+            'You leave the treasure untouched and follow the faint breeze toward what feels like an exit.',
       ),
     ],
   ),
-  'altar': const StoryNode(
-    id: 'altar',
-    title: 'Room 4: The Ancient Altar',
+
+  'trapGallery': const StoryNode(
+    id: 'trapGallery',
+    title: 'Room 7: The Trap Gallery',
     description:
-        'An ancient altar glows with a strange blue light. Resting on it is a small iron key surrounded by runes.',
+        'The walls here are carved with narrow slits, and the floor is divided into worn square tiles. Rusted blades hang overhead on chains, and several broken bones lie scattered along the edge of the room.',
     sceneFrames: [
-      'assets/images/scene/altar/key_1.png',
-      'assets/images/scene/altar/key_2.png',
-      'assets/images/scene/altar/key_3.png',
-      'assets/images/scene/altar/key_4.png',
+      'assets/images/scene/cursed/skull_1.png',
+      'assets/images/scene/cursed/skull_2.png',
+      'assets/images/scene/cursed/skull_3.png',
+      'assets/images/scene/cursed/skull_4.png',
     ],
     choices: [
       StoryChoice(
-        text: 'Take the key',
-        nextNodeId: 'escapeEnding',
-        resultText: 'The runes fade. The key unlocks a hidden exit from the dungeon.',
-      ),
-      StoryChoice(
-        text: 'Touch the altar',
-        nextNodeId: 'cursedEnding',
+        text: 'Move slowly and watch the floor',
+        nextNodeId: 'altarOfAsh',
         healthChange: -1,
-        resultText: 'Dark energy surges through your body.',
+        resultText:
+            'You avoid the worst of the traps, though one swinging blade clips your side as you pass.',
       ),
       StoryChoice(
-        text: 'Back away quietly',
-        nextNodeId: 'neutralEnding',
-        resultText: 'You avoid the altar and search for a safer route out.',
+        text: 'Search for a hidden control lever',
+        nextNodeId: 'relicVault',
+        resultText:
+            'Behind a loose stone, you find a lever that halts the traps and opens a stone door ahead.',
+      ),
+      StoryChoice(
+        text: 'Sprint through as fast as possible',
+        nextNodeId: 'gameOver',
+        resultText:
+            'You dash forward, but the gallery erupts in blades and darts before you can reach the exit.',
       ),
     ],
   ),
+
+  'altarOfAsh': const StoryNode(
+      id: 'altarOfAsh',
+      title: 'Room 8: The Altar of Ash',
+      description:
+          'A black stone altar rises from the center of the chamber, ringed by pale ash and blue fire that burns without heat. Resting on the altar is an iron key marked with the same symbol you saw carved near the entrance.',
+      sceneFrames: [
+        'assets/images/scene/altar_flame/flame_1.png',
+        'assets/images/scene/altar_flame/flame_2.png',
+        'assets/images/scene/altar_flame/flame_3.png',
+      ],
+      choices: [
+        StoryChoice(
+          text: 'Take the iron key',
+          nextNodeId: 'relicVault',
+          resultText:
+              'The moment you lift the key, a hidden lock somewhere deeper in the dungeon clicks open.',
+        ),
+        StoryChoice(
+          text: 'Touch the blue flame',
+          nextNodeId: 'cursedEnding',
+          healthChange: -1,
+          resultText:
+              'The fire surges up your arm like liquid shadow, leaving your skin cold and numb.',
+        ),
+        StoryChoice(
+          text: 'Read the inscription carved into the altar',
+          nextNodeId: 'escapeEnding',
+          resultText:
+              'As you speak the final words aloud, a hidden stairway opens in the wall, offering a safe way out.',
+        ),
+      ],
+    ),
+
+  'relicVault': const StoryNode(
+      id: 'relicVault',
+      title: 'Room 9: The Relic Vault',
+      description:
+          'At last you enter the heart of the dungeon. On a pedestal of obsidian rests a single jeweled relic, pulsing with a dim inner glow. Around it, the floor is untouched, as though even the dead refused to step closer.',
+      sceneFrames: [
+        'assets/images/scene/relic_vault/door_1.png',
+        'assets/images/scene/relic_vault/door_2.png',
+        'assets/images/scene/relic_vault/door_3.png',
+        'assets/images/scene/relic_vault/door_4.png',
+      ],
+      choices: [
+        StoryChoice(
+          text: 'Claim the relic as your prize',
+          nextNodeId: 'cursedEnding',
+          resultText:
+              'The relic feels warm in your hands, but a whisper enters your mind the instant you touch it.',
+        ),
+        StoryChoice(
+          text: 'Destroy the relic and flee',
+          nextNodeId: 'escapeEnding',
+          resultText:
+              'You strike the relic against the pedestal. It shatters in a burst of light, and the dungeon begins to collapse behind you.',
+        ),
+        StoryChoice(
+          text: 'Leave it untouched and walk away',
+          nextNodeId: 'neutralEnding',
+          resultText:
+              'You decide some treasures are meant to remain buried and turn toward the path home.',
+        ),
+      ],
+    ),
+
   'escapeEnding': const StoryNode(
     id: 'escapeEnding',
     title: 'Victory',
     description:
-        'You survive the dungeon and escape with both your life and a valuable reward. Your choices led you to the best possible outcome.',
+        'You escape the dungeon alive, having resisted its worst temptations and survived its deadliest trials. Whether by wisdom, courage, or sheer luck, you found the only ending that truly feels like a victory.',
     sceneFrames: [
       'assets/images/scene/victory/coin_1.png',
       'assets/images/scene/victory/coin_2.png',
@@ -136,11 +319,12 @@ final Map<String, StoryNode> storyData = {
     choices: [],
     isEnding: true,
   ),
+
   'cursedEnding': const StoryNode(
     id: 'cursedEnding',
     title: 'Cursed Ending',
     description:
-        'You make it out of the dungeon, but something dark follows you. Whatever power rested below now clings to your soul.',
+        'You make it out of the dungeon, but you do not leave unchanged. Something ancient and hungry now travels with you, hidden just beneath your skin, waiting for the moment it can take hold.',
     sceneFrames: [
       'assets/images/scene/cursed/skull_1.png',
       'assets/images/scene/cursed/skull_2.png',
@@ -150,11 +334,12 @@ final Map<String, StoryNode> storyData = {
     choices: [],
     isEnding: true,
   ),
+
   'neutralEnding': const StoryNode(
     id: 'neutralEnding',
     title: 'Escape',
     description:
-        'You leave the dungeon empty-handed, but alive. Not every adventure ends in glory, but survival is its own reward.',
+        'You leave the dungeon empty-handed, but with your life intact. No songs will be sung about your treasure, yet there is a quiet wisdom in knowing when to walk away.',
     sceneFrames: [
       'assets/images/scene/escape/flag_1.png',
       'assets/images/scene/escape/flag_2.png',
@@ -164,11 +349,12 @@ final Map<String, StoryNode> storyData = {
     choices: [],
     isEnding: true,
   ),
+
   'gameOver': const StoryNode(
     id: 'gameOver',
     title: 'Game Over',
     description:
-        'Your strength fails, and the dungeon claims another victim. The darkness closes in around you.',
+        'Your strength fails in the darkness below. The dungeon closes around you, silent and patient, adding your story to the many it has already swallowed.',
     sceneFrames: [
       'assets/images/scene/game_over/skull_1.png',
       'assets/images/scene/game_over/skull_2.png',
