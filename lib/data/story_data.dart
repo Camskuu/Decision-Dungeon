@@ -41,10 +41,10 @@ final Map<String, StoryNode> storyData = {
     description:
         'Tall statues stand on both sides of the chamber, their faces worn smooth by time. A faint whisper curls through the air, as if the stone itself is speaking. Several of the statues still hold gemstones in their empty eye sockets.',
     sceneFrames: [
-      'assets/images/scene/start/torch_1.png',
-      'assets/images/scene/start/torch_2.png',
-      'assets/images/scene/start/torch_3.png',
-      'assets/images/scene/start/torch_4.png',
+      'assets/images/scene/statue/statue_1.png',
+      'assets/images/scene/statue/statue_2.png',
+      'assets/images/scene/statue/statue_3.png',
+      'assets/images/scene/statue/statue_4.png',
     ],
     choices: [
       StoryChoice(
@@ -74,7 +74,7 @@ final Map<String, StoryNode> storyData = {
     id: 'ghoulPassage',
     title: 'Room 3: The Ghoul Passage',
     description:
-        'A gaunt creature drags itself from the shadows ahead. Its rib cage is visible beneath pale skin, and its claws scrape sparks from the stone floor. Behind it, the passage splits again into darkness.',
+        'A gaunt creature drags itself from the shadows ahead. Its rib cage is visible beneath pale skin, and its large scythe scrapes sparks along the stone floor. Behind it, the passage splits again into darkness.',
     sceneFrames: [
       'assets/images/scene/ghoul/skeleton_1.png',
       'assets/images/scene/ghoul/skeleton_2.png',
@@ -87,7 +87,7 @@ final Map<String, StoryNode> storyData = {
         nextNodeId: 'chestChamber',
         healthChange: -1,
         resultText:
-            'You defeat the creature, but not before its claws rake across your arm.',
+            'You defeat the creature, but not before its scythe slashes your arm.',
       ),
       StoryChoice(
         text: 'Use your torch to drive it back',
@@ -110,10 +110,14 @@ final Map<String, StoryNode> storyData = {
     description:
         'A stone bridge stretches over a deep black chasm, but its center has crumbled away. On the far side, you can see the outline of an iron door. Beneath you, there is only darkness and the sound of distant dripping water.',
     sceneFrames: [
-      'assets/images/scene/escape/flag_1.png',
-      'assets/images/scene/escape/flag_2.png',
-      'assets/images/scene/escape/flag_3.png',
-      'assets/images/scene/escape/flag_4.png',
+      'assets/images/scene/bridge/bridge_1.png',
+      'assets/images/scene/bridge/bridge_2.png',
+      'assets/images/scene/bridge/bridge_3.png',
+      'assets/images/scene/bridge/bridge_4.png',
+      'assets/images/scene/bridge/bridge_5.png',
+      'assets/images/scene/bridge/bridge_6.png',
+      'assets/images/scene/bridge/bridge_7.png',
+      'assets/images/scene/bridge/bridge_8.png',
     ],
     choices: [
       StoryChoice(
@@ -211,10 +215,12 @@ final Map<String, StoryNode> storyData = {
     description:
         'The walls here are carved with narrow slits, and the floor is divided into worn square tiles. Rusted blades hang overhead on chains, and several broken bones lie scattered along the edge of the room.',
     sceneFrames: [
-      'assets/images/scene/cursed/skull_1.png',
-      'assets/images/scene/cursed/skull_2.png',
-      'assets/images/scene/cursed/skull_3.png',
-      'assets/images/scene/cursed/skull_4.png',
+      'assets/images/scene/trap/trap_1.png',
+      'assets/images/scene/trap/trap_2.png',
+      'assets/images/scene/trap/trap_3.png',
+      'assets/images/scene/trap/trap_4.png',
+      'assets/images/scene/trap/trap_5.png',
+      'assets/images/scene/trap/trap_6.png',
     ],
     choices: [
       StoryChoice(
@@ -278,10 +284,10 @@ final Map<String, StoryNode> storyData = {
       description:
           'At last you enter the heart of the dungeon. On a pedestal of obsidian rests a single jeweled relic, pulsing with a dim inner glow. Around it, the floor is untouched, as though even the dead refused to step closer.',
       sceneFrames: [
-        'assets/images/scene/relic_vault/door_1.png',
-        'assets/images/scene/relic_vault/door_2.png',
-        'assets/images/scene/relic_vault/door_3.png',
-        'assets/images/scene/relic_vault/door_4.png',
+        'assets/images/scene/relic_vault/altar_1.png',
+        'assets/images/scene/relic_vault/altar_2.png',
+        'assets/images/scene/relic_vault/altar_3.png',
+        'assets/images/scene/relic_vault/altar_4.png',
       ],
       choices: [
         StoryChoice(

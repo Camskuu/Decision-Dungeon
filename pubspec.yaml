@@ -1,5 +1,5 @@
 name: decision_dungeon
-description: "A new Flutter project."
+description: "A text-based adventure game made in flutter"
 publish_to: 'none'
 version: 0.1.0
 
@@ -33,6 +33,10 @@ flutter:
     - assets/images/scene/library/
     - assets/images/scene/altar_flame/
     - assets/images/scene/relic_vault/
+    - assets/images/scene/statue/
+    - assets/images/scene/bridge/
+    - assets/images/scene/door/
+    - assets/images/scene/trap/
     
 
   fonts:

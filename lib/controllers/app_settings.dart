@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/audio_service.dart';
 
 class AppSettings extends ChangeNotifier {
   bool _isDarkMode = true;
@@ -12,8 +13,9 @@ class AppSettings extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleSound(bool value) {
+  Future<void> toggleSound(bool value) async {
     _soundOn = value;
+    await AudioService.instance.setSoundEnabled(value);
     notifyListeners();
   }
 }
