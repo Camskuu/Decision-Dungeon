@@ -56,17 +56,21 @@ class _SceneArtState extends State<SceneArt> {
   @override
   Widget build(BuildContext context) {
     if (widget.frames.isEmpty) {
-      return SizedBox(height: widget.height);
+      return SizedBox(
+        height: widget.height,
+        width: double.infinity,
+      );
     }
 
-return SizedBox(
-      height: widget.height,
+    return SizedBox(
       width: double.infinity,
-      child: Image.asset(
-        widget.frames[_frameIndex],
-        fit: BoxFit.fitHeight,
-        alignment: Alignment.center,
-        filterQuality: FilterQuality.none,
+      height: widget.height,
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: Image.asset(
+          widget.frames[_frameIndex],
+          filterQuality: FilterQuality.none,
+        ),
       ),
     );
   }

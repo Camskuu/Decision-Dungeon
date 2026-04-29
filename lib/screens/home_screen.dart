@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Version 1.3.2',
+                          'Version 1.4.0',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.grey,
                           ),

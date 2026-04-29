@@ -47,6 +47,85 @@ class _GameScreenState extends State<GameScreen> {
     AudioService.instance.playContinue();
   }
 
+Widget _buildResponsiveScenePanel(
+  String nodeId,
+  List<String> frames,
+  bool isDark,
+) {
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      final width = constraints.maxWidth;
+
+      final isPictureRoom = {
+        'whisperHall',
+        'collapsedBridge',
+        'trapGallery',
+        'relicVault',
+      }.contains(nodeId);
+
+      final double aspectRatio;
+      final double minHeight;
+      final double maxHeight;
+
+      if (isPictureRoom) {
+        // Picture-style rooms: less banner-like
+        if (width < 600) {
+          aspectRatio = 4 / 3;
+        } else if (width < 1000) {
+          aspectRatio = 3 / 2;
+        } else {
+          aspectRatio = 16 / 10;
+        }
+
+        minHeight = 130;
+        maxHeight = 240;
+      } else {
+        // Animated sprite rooms: wider banner works better
+        if (width < 600) {
+          aspectRatio = 2.2;
+        } else if (width < 1000) {
+          aspectRatio = 2.8;
+        } else {
+          aspectRatio = 3.4;
+        }
+
+        minHeight = 90;
+        maxHeight = 160;
+      }
+
+      final panelHeight = (width / aspectRatio).clamp(minHeight, maxHeight);
+
+      final borderRadius = width < 600 ? 18.0 : 12.0;
+      final padding = width < 600
+          ? const EdgeInsets.all(8)
+          : const EdgeInsets.symmetric(horizontal: 8, vertical: 6);
+
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        width: double.infinity,
+        padding: padding,
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.black.withOpacity(0.22)
+              : Colors.brown.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius - 2),
+          child: SizedBox(
+            height: panelHeight,
+            child: SceneArt(
+              frames: frames,
+              height: panelHeight,
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -116,107 +195,163 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildGameplayScreen(BuildContext context, bool isDark) {
-    final node = _controller.currentNode;
-    final isEnding = node.isEnding;
+Widget _buildGameplayScreen(BuildContext context, bool isDark) {
+  final node = _controller.currentNode;
+  final isEnding = node.isEnding;
+  final theme = Theme.of(context);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isWide = constraints.maxWidth > 850;
+  Widget actionContent = Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      if (!isEnding) ...[
+        for (final choice in node.choices) ...[
+          _choiceButton(choice, isDark),
+          const SizedBox(height: 14),
+        ],
+      ] else ...[
+        _endButton(
+          text: 'Play Again',
+          onPressed: () {
+            _playClick();
+            _controller.restartGame();
+          },
+          filled: true,
+        ),
+        const SizedBox(height: 14),
+        _endButton(
+          text: 'Back to Title',
+          onPressed: () {
+            _playClick();
+            Navigator.pop(context);
+          },
+        ),
+      ],
+      const SizedBox(height: 18),
+      _buildDecisionLog(isDark),
+    ],
+  );
 
-        final storySection = Expanded(
-          flex: 3,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: PixelFrame(
-              borderColor: AppTheme.gold,
-              fillColor: Theme.of(context).colorScheme.surface.withOpacity(0.95),
-              shadowColor: Colors.black.withOpacity(0.25),
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    node.title,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildHealthRow(),
-                  const SizedBox(height: 16),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 4,
-                    ),
-                    color: isDark
-                        ? Colors.black.withOpacity(0.22)
-                        : Colors.brown.withOpacity(0.08),
-                    child: SceneArt(
-                      frames: node.sceneFrames,
-                      height: isWide ? 120 : 95,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: TypewriterText(
-                        key: ValueKey('desc_${node.id}'),
-                        text: node.description,
-                        style: Theme.of(context).textTheme.bodyLarge,
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      final isWide = constraints.maxWidth > 850;
+
+      if (isWide) {
+        final cardHeight = constraints.maxHeight - 32;
+
+        return SizedBox(
+          height: constraints.maxHeight,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    height: cardHeight,
+                    child: PixelFrame(
+                      borderColor: AppTheme.gold,
+                      fillColor: theme.colorScheme.surface.withOpacity(0.95),
+                      shadowColor: Colors.black.withOpacity(0.25),
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            node.title,
+                            style: theme.textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildHealthRow(),
+                          const SizedBox(height: 16),
+                          _buildResponsiveScenePanel(
+                            node.id,
+                            node.sceneFrames,
+                            isDark,
+                          ),
+                          const SizedBox(height: 16),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: TypewriterText(
+                                key: ValueKey('desc_${node.id}'),
+                                text: node.description,
+                                style: theme.textTheme.bodyLarge,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 16, 16, 16),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 700),
+                      child: SingleChildScrollView(
+                        child: actionContent,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
+      }
 
-        final actionSection = Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  if (!isEnding) ...[
-                    for (final choice in node.choices) ...[
-                      _choiceButton(choice, isDark),
-                      const SizedBox(height: 14),
-                    ],
-                  ] else ...[
-                    _endButton(
-                      text: 'Play Again',
-                      onPressed: () {
-                        _playClick();
-                        _controller.restartGame();
-                      },
-                      filled: true,
+      return SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: PixelFrame(
+                borderColor: AppTheme.gold,
+                fillColor: theme.colorScheme.surface.withOpacity(0.95),
+                shadowColor: Colors.black.withOpacity(0.25),
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      node.title,
+                      style: theme.textTheme.headlineMedium,
                     ),
-                    const SizedBox(height: 14),
-                    _endButton(
-                      text: 'Back to Title',
-                      onPressed: () {
-                        _playClick();
-                        Navigator.pop(context);
-                      },
+                    const SizedBox(height: 12),
+                    _buildHealthRow(),
+                    const SizedBox(height: 16),
+                    _buildResponsiveScenePanel(
+                      node.id,
+                      node.sceneFrames,
+                      isDark,
+                    ),
+                    const SizedBox(height: 16),
+                    TypewriterText(
+                      key: ValueKey('desc_${node.id}'),
+                      text: node.description,
+                      style: theme.textTheme.bodyLarge,
                     ),
                   ],
-                  const SizedBox(height: 18),
-                  _buildDecisionLog(isDark),
-                ],
+                ),
               ),
             ),
-          ),
-        );
-
-        return isWide
-            ? Row(children: [storySection, actionSection])
-            : Column(children: [storySection, actionSection]);
-      },
-    );
-  }
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: actionContent,
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildEventScreen(BuildContext context, bool isDark) {
     final choice = _controller.pendingChoice;
