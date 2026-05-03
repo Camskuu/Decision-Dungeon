@@ -4,7 +4,7 @@ import '../models/story_node.dart';
 final Map<String, StoryNode> storyData = {
   'start': const StoryNode(
     id: 'start',
-    title: 'Room 1: The Dungeon Gate',
+    title: 'The Dungeon Gate',
     description:
         'You step beneath a cracked stone arch and into the dungeon proper. Cold air rushes past you, carrying the smell of dust, ash, and old metal. Three paths open ahead: a whispering hall lined with statues, a torchlit tunnel streaked with claw marks, and a broken bridge suspended over darkness.',
     sceneFrames: [
@@ -37,7 +37,7 @@ final Map<String, StoryNode> storyData = {
 
   'whisperHall': const StoryNode(
     id: 'whisperHall',
-    title: 'Room 2: The Whispering Hall',
+    title: 'The Whispering Hall',
     description:
         'Tall statues stand on both sides of the chamber, their faces worn smooth by time. A faint whisper curls through the air, as if the stone itself is speaking. Several of the statues still hold gemstones in their empty eye sockets.',
     sceneFrames: [
@@ -72,7 +72,7 @@ final Map<String, StoryNode> storyData = {
 
   'ghoulPassage': const StoryNode(
     id: 'ghoulPassage',
-    title: 'Room 3: The Ghoul Passage',
+    title: 'The Ghoul Passage',
     description:
         'A gaunt creature drags itself from the shadows ahead. Its rib cage is visible beneath pale skin, and its large scythe scrapes sparks along the stone floor. Behind it, the passage splits again into darkness.',
     sceneFrames: [
@@ -106,7 +106,7 @@ final Map<String, StoryNode> storyData = {
 
   'collapsedBridge': const StoryNode(
     id: 'collapsedBridge',
-    title: 'Room 4: The Collapsed Bridge',
+    title: 'The Collapsed Bridge',
     description:
         'A stone bridge stretches over a deep black chasm, but its center has crumbled away. On the far side, you can see the outline of an iron door. Beneath you, there is only darkness and the sound of distant dripping water.',
     sceneFrames: [
@@ -144,7 +144,7 @@ final Map<String, StoryNode> storyData = {
 
   'forgottenLibrary': const StoryNode(
       id: 'forgottenLibrary',
-      title: 'Room 5: The Forgotten Library',
+      title: 'The Forgotten Library',
       description:
           'Dusty shelves line the circular room from floor to ceiling. Most of the books have rotted away, but a few survive in locked cases. At the center stands a reading desk with a journal still open beneath a cracked lantern.',
       sceneFrames: [
@@ -177,7 +177,7 @@ final Map<String, StoryNode> storyData = {
 
   'chestChamber': const StoryNode(
     id: 'chestChamber',
-    title: 'Room 6: The Chest Chamber',
+    title: 'The Chest Chamber',
     description:
         'A large iron-bound chest rests in the middle of the room beneath a cone of pale light. Coins are scattered across the floor, but none look recently disturbed. The silence here is so complete it feels deliberate.',
     sceneFrames: [
@@ -211,7 +211,7 @@ final Map<String, StoryNode> storyData = {
 
   'trapGallery': const StoryNode(
     id: 'trapGallery',
-    title: 'Room 7: The Trap Gallery',
+    title: 'The Trap Gallery',
     description:
         'The walls here are carved with narrow slits, and the floor is divided into worn square tiles. Rusted blades hang overhead on chains, and several broken bones lie scattered along the edge of the room.',
     sceneFrames: [
@@ -247,7 +247,7 @@ final Map<String, StoryNode> storyData = {
 
   'altarOfAsh': const StoryNode(
       id: 'altarOfAsh',
-      title: 'Room 8: The Altar of Ash',
+      title: 'The Altar of Ash',
       description:
           'A black stone altar rises from the center of the chamber, ringed by pale ash and blue fire that burns without heat. Resting on the altar is an iron key marked with the same symbol you saw carved near the entrance.',
       sceneFrames: [
@@ -280,7 +280,7 @@ final Map<String, StoryNode> storyData = {
 
   'relicVault': const StoryNode(
       id: 'relicVault',
-      title: 'Room 9: The Relic Vault',
+      title: 'The Relic Vault',
       description:
           'At last you enter the heart of the dungeon. On a pedestal of obsidian rests a single jeweled relic, pulsing with a dim inner glow. Around it, the floor is untouched, as though even the dead refused to step closer.',
       sceneFrames: [

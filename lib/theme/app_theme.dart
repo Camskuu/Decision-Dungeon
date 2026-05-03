@@ -22,10 +22,15 @@ class AppTheme {
       surface: darkPanel,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.black,
-      foregroundColor: gold,
-      centerTitle: true,
-    ),
+        backgroundColor: Colors.black,
+        foregroundColor: gold,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontFamily: 'Jacquard12',
+          fontSize: 28,
+          color: gold,
+        ),
+      ),
     textTheme: const TextTheme(
       displayLarge: TextStyle(
         fontFamily: 'Jacquard12',
@@ -70,6 +75,11 @@ class AppTheme {
       backgroundColor: Color(0xFF3A2412),
       foregroundColor: Color(0xFFFFD54F),
       centerTitle: true,
+      titleTextStyle: TextStyle(
+        fontFamily: 'Jacquard12',
+        fontSize: 28,
+        color: Color(0xFFFFD54F),
+      ),
     ),
     textTheme: const TextTheme(
       displayLarge: TextStyle(
